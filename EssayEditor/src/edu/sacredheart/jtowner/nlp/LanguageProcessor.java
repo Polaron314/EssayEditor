@@ -1,10 +1,8 @@
+package edu.sacredheart.jtowner.nlp;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
@@ -14,32 +12,13 @@ import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
-public class Main {
+public class LanguageProcessor {
 	
-	public static void main(String[] args) {
-		try {
-			String text = readFile("essay.txt", Charset.defaultCharset());
-			String[] sentences = toSentences(text);
-			System.out.println(Arrays.toString(sentences));
-			String[] tokenized = tokenizer(sentences[0]);
-			String[] tagged = POSTagger(tokenized);
-			System.out.println(Arrays.toString(tokenized));
-			System.out.println(Arrays.toString(tagged));
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public LanguageProcessor() {
+		
 	}
 	
-	static String readFile(String path, Charset encoding) 
-			  throws IOException 
-			{
-			  byte[] encoded = Files.readAllBytes(Paths.get(path));
-			  return new String(encoded, encoding);
-			}
-	
-	public static String[] tokenizer(String sentence) {
+	public String[] tokenizer(String sentence) {
 		InputStream modelIn = null;
 		try {
 		  modelIn = new FileInputStream("en-token.bin");
@@ -63,7 +42,7 @@ public class Main {
 		return null;
 	}
 	
-	public static String[] POSTagger(String[] tokenized) {
+	public String[] POSTagger(String[] tokenized) {
 		InputStream modelIn = null;
 
 		try {
@@ -90,7 +69,7 @@ public class Main {
 		return null;
 	}
 	
-	public static String[] toSentences(String text) {
+	public String[] toSentences(String text) {
 		InputStream modelIn = null;
 
 		try {
@@ -115,5 +94,7 @@ public class Main {
 		}
 		return null;
 	}
+	
+	
 	
 }
