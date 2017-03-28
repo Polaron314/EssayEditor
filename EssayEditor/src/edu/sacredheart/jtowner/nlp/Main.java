@@ -4,6 +4,9 @@ public class Main {
 	public static void main(String[] args) {
 		Essay e = new Essay("essay.txt");
 		e.process();
-		System.out.println("hi");
+	}
+	
+	public static void getInfo(Essay e) {
+		
 	}
 }
