@@ -39,5 +39,6 @@
 	<classpathentry kind="lib" path="/home/joshua/Downloads/apache-opennlp-1.7.2/lib/grizzly-http-2.3.28.jar"/>
 	<classpathentry kind="lib" path="/home/joshua/Downloads/apache-opennlp-1.7.2/lib/grizzly-framework-2.3.28.jar"/>
 	<classpathentry kind="lib" path="/home/joshua/Downloads/apache-opennlp-1.7.2/lib/aopalliance-repackaged-2.5.0-b30.jar"/>
+	<classpathentry kind="lib" path="/home/joshua/Downloads/jrtf-0.7-02.07.2012.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

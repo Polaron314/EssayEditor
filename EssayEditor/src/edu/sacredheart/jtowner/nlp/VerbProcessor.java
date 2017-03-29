@@ -7,23 +7,26 @@ import java.util.List;
 
 public class VerbProcessor {
 	
-	private String[] sentence;
-	private String[] tags;
+	private String[][] sentences;
+	private String[][] tags;
+	private List<Verb> verbs = new ArrayList<Verb>();
 	
 	public VerbProcessor() {
 		
 	}
 	
-	public int[] process(String[] sentence, String[] tags) {
-		System.out.println(Arrays.toString(sentence));
-		System.out.println(Arrays.toString(tags));
-		this.sentence = sentence;
+	public List<Verb> process(String[][] sentences, String[][] tags) {
+		this.sentences = sentences;
 		this.tags = tags;
-		this.removeAdverbs();
-		return this.processAllVerbs();
+		for(int i = 0; i < sentences.length; i++) {
+			String[][] stuff = this.removeAdverbs(this.sentences[i], this.tags[i]);
+			this.processAllVerbs(stuff[0], stuff[1], i);
+		}
+		this.fixAdverbs(sentences, tags);
+		return verbs;
 	}
 	
-	public void removeAdverbs() {
+	public String[][] removeAdverbs(String[] sentence, String[] tags) {
 		List<String> sentenceList = new LinkedList<String>(Arrays.asList(sentence));
 		List<String> tagList = new LinkedList<String>(Arrays.asList(tags));
 		for(int i = sentenceList.size() - 1; i >= 0; i--) {
@@ -32,11 +35,27 @@ public class VerbProcessor {
 				tagList.remove(i);
 			}
 		}
-		this.sentence = sentenceList.toArray(new String[sentenceList.size()]);
-		this.tags = tagList.toArray(new String[tagList.size()]);
+		String[][] stuff = new String[2][];
+		stuff[0] = sentenceList.toArray(new String[sentenceList.size()]);
+		stuff[1] = tagList.toArray(new String[tagList.size()]);
+		return stuff;
 	}
 	
-	public int[] processAllVerbs() {
+	public void fixAdverbs(String[][] sentences, String[][] tags) {
+		for(int i = 0; i < sentences.length; i++) {
+			for(int j = 0; j < sentences[i].length; j++) {
+				if(tags[i][j].contains("RB")) {
+					for(Verb v : verbs) {
+						if(v.doesContain(i, j)) {
+							v.increaseLength();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void processAllVerbs(String[] sentence, String[] tags, int sentenceNum) {
 		List<String> sl = new LinkedList<String>(Arrays.asList(sentence));
 		List<String> tl = new LinkedList<String>(Arrays.asList(tags));
 		int[] tenses = new int[3];
@@ -47,12 +66,14 @@ public class VerbProcessor {
 			case "VBP":
 				tenses[1]++;
 				voices[0]++;
+				this.addVerb(sentenceNum, i, 1, 0, 1);
 				sl.remove(i);
 				tl.remove(i);
 				break;
 			case "VBZ":
 				tenses[1]++;
 				voices[0]++;
+				this.addVerb(sentenceNum, i, 1, 0, 1);
 				sl.remove(i);
 				tl.remove(i);
 				break;
@@ -60,6 +81,7 @@ public class VerbProcessor {
 				if(i > 2 && sl.get(i - 1).equals("being") && sl.get(i - 2).equals("be") && sl.get(i - 3).equals("will")) {
 					tenses[2]++;
 					voices[1]++;
+					this.addVerb(sentenceNum, i - 3, 4, 1, 2);
 					sl.remove(i);
 					tl.remove(i);
 					sl.remove(i-1);
@@ -72,6 +94,7 @@ public class VerbProcessor {
 				} else if(i > 1 && sl.get(i - 1).equals("being") && (sl.get(i - 2).equals("was")||sl.get(i - 2).equals("were"))){
 					tenses[0]++;
 					voices[1]++;
+					this.addVerb(sentenceNum, i - 2, 3, 1, 0);
 					sl.remove(i);
 					tl.remove(i);
 					sl.remove(i-1);
@@ -82,6 +105,7 @@ public class VerbProcessor {
 				} else {
 					tenses[0]++;
 					voices[0]++;
+					this.addVerb(sentenceNum, i, 1, 0, 0);
 					sl.remove(i);
 					tl.remove(i);
 				}
@@ -90,6 +114,7 @@ public class VerbProcessor {
 				if(i != 0 && sl.get(i - 1).equals("will")) {
 					tenses[2]++;
 					voices[0]++;
+					this.addVerb(sentenceNum, i - 1, 2, 0, 2);
 					sl.remove(i);
 					tl.remove(i);
 					sl.remove(i - 1);
@@ -100,9 +125,10 @@ public class VerbProcessor {
 			case "VBG":
 				if(i != 0) {
 					switch(sl.get(i - 1)) {
-					case "is": case "are":
+					case "is": case "are": case "am":
 						tenses[1]++;
 						voices[0]++;
+						this.addVerb(sentenceNum, i - 1, 2, 0, 1);
 						sl.remove(i);
 						tl.remove(i);
 						sl.remove(i - 1);
@@ -114,6 +140,7 @@ public class VerbProcessor {
 							if(i > 2 && sl.get(i - 3).equals("will")) {
 								tenses[2]++;
 								voices[0]++;
+								this.addVerb(sentenceNum, i - 3, 4, 0, 2);
 								sl.remove(i);
 								tl.remove(i);
 								sl.remove(i - 1);
@@ -126,6 +153,7 @@ public class VerbProcessor {
 							} else{
 								tenses[1]++;
 								voices[0]++;
+								this.addVerb(sentenceNum, i - 2, 3, 0, 1);
 								sl.remove(i);
 								tl.remove(i);
 								sl.remove(i - 1);
@@ -137,6 +165,7 @@ public class VerbProcessor {
 						} else if(i > 1 && sl.get(i - 2).equals("had")) {
 							tenses[0]++;
 							voices[0]++;
+							this.addVerb(sentenceNum, i - 2, 3, 0, 0);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -149,6 +178,7 @@ public class VerbProcessor {
 					case "was": case "were":
 						tenses[0]++;
 						voices[0]++;
+						this.addVerb(sentenceNum, i - 1, 2, 0, 0);
 						sl.remove(i);
 						tl.remove(i);
 						sl.remove(i - 1);
@@ -159,6 +189,7 @@ public class VerbProcessor {
 						if(i > 1 && sl.get(i - 2).equals("will")) {
 							tenses[2]++;
 							voices[0]++;
+							this.addVerb(sentenceNum, i - 2, 3, 0, 2);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -169,6 +200,7 @@ public class VerbProcessor {
 						} else if(i > 1 && tl.get(i - 2).equals("MD")) {
 							tenses[1]++;
 							voices[0]++;
+							this.addVerb(sentenceNum, i - 2, 3, 0, 1);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -188,6 +220,7 @@ public class VerbProcessor {
 						if(i > 1 && sl.get(i - 2).equals("will")) {
 							tenses[2]++;
 							voices[0]++;
+							this.addVerb(sentenceNum, i - 2, 3, 0, 2);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -198,6 +231,7 @@ public class VerbProcessor {
 						} else {
 							tenses[1]++;
 							voices[0]++;
+							this.addVerb(sentenceNum, i - 1, 2, 0, 1);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -208,6 +242,7 @@ public class VerbProcessor {
 					case "had":
 						tenses[0]++;
 						voices[0]++;
+						this.addVerb(sentenceNum, i - 1, 2, 0, 0);
 						sl.remove(i);
 						tl.remove(i);
 						sl.remove(i - 1);
@@ -218,6 +253,7 @@ public class VerbProcessor {
 						if(i > 1 && sl.get(i-2).equals("will")) {
 							tenses[2]++;
 							voices[1]++;
+							this.addVerb(sentenceNum, i - 2, 3, 1, 2);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -228,6 +264,7 @@ public class VerbProcessor {
 						} else if (i > 1 && tl.get(i-2).equals("MD")) {
 							tenses[1]++;
 							voices[1]++;
+							this.addVerb(sentenceNum, i - 2, 3, 1, 1);
 							sl.remove(i);
 							tl.remove(i);
 							sl.remove(i - 1);
@@ -240,15 +277,17 @@ public class VerbProcessor {
 					case "was": case "were":
 						tenses[0]++;
 						voices[0]++;
+						this.addVerb(sentenceNum, i - 1, 2, 0, 0);
 						sl.remove(i);
 						tl.remove(i);
 						sl.remove(i - 1);
 						tl.remove(i - 1);
 						i--;
 						break;
-					case "is": case "are":
+					case "is": case "are": case "am":
 						tenses[1]++;
 						voices[1]++;
+						this.addVerb(sentenceNum, i - 1, 2, 1, 1);
 						sl.remove(i);
 						tl.remove(i);
 						sl.remove(i - 1);
@@ -258,9 +297,10 @@ public class VerbProcessor {
 					case "being":
 						if(i > 1) {
 							switch(sl.get(i - 2)) {
-							case "is": case "are":
+							case "is": case "are": case "am":
 								tenses[1]++;
 								voices[1]++;
+								this.addVerb(sentenceNum, i - 2, 3, 1, 1);
 								sl.remove(i);
 								tl.remove(i);
 								sl.remove(i - 1);
@@ -272,6 +312,7 @@ public class VerbProcessor {
 							case "was": case "were":
 								tenses[0]++;
 								voices[1]++;
+								this.addVerb(sentenceNum, i - 2, 3, 1, 0);
 								sl.remove(i);
 								tl.remove(i);
 								sl.remove(i - 1);
@@ -284,6 +325,7 @@ public class VerbProcessor {
 								if(i > 2 && sl.get(i-3).equals("will")) {
 									tenses[2]++;
 									voices[1]++;
+									this.addVerb(sentenceNum, i - 3, 4, 1, 2);
 									sl.remove(i);
 									tl.remove(i);
 									sl.remove(i - 1);
@@ -304,6 +346,7 @@ public class VerbProcessor {
 								if(i > 2 && sl.get(i-3).equals("will")) {
 									tenses[1]++;
 									voices[1]++;
+									this.addVerb(sentenceNum, i - 3, 4, 1, 1);
 									sl.remove(i);
 									tl.remove(i);
 									sl.remove(i - 1);
@@ -316,6 +359,7 @@ public class VerbProcessor {
 								} else {
 									tenses[0]++;
 									voices[1]++;
+									this.addVerb(sentenceNum, i - 2, 3, 1, 0);
 									sl.remove(i);
 									tl.remove(i);
 									sl.remove(i - 1);
@@ -328,6 +372,7 @@ public class VerbProcessor {
 							case "had":
 								tenses[0]++;
 								voices[1]++;
+								this.addVerb(sentenceNum, i - 2, 3, 1, 0);
 								sl.remove(i);
 								tl.remove(i);
 								sl.remove(i - 1);
@@ -343,7 +388,9 @@ public class VerbProcessor {
 				}
 			}
 		}
-		System.out.println(Arrays.toString(voices));
-		return tenses;
+	}
+	
+	private void addVerb(int sentence, int location, int tokenLength, int voice, int tense) {
+		this.verbs.add(new Verb(sentence, location, tokenLength, voice, tense));
 	}
 }

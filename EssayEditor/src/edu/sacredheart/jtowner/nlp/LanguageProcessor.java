@@ -1,6 +1,7 @@
 package edu.sacredheart.jtowner.nlp;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,35 +12,40 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
+import opennlp.tools.util.Span;
 
 public class LanguageProcessor {
 	
+	TokenizerModel model;
+	
 	public LanguageProcessor() {
-		
+		InputStream modelIn = null;
+		try {
+			modelIn = new FileInputStream("en-token.bin");
+			model = new TokenizerModel(modelIn);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				modelIn.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public String[] tokenizer(String sentence) {
-		InputStream modelIn = null;
-		try {
-		  modelIn = new FileInputStream("en-token.bin");
-		  TokenizerModel model = new TokenizerModel(modelIn);
-		  Tokenizer tokenizer = new TokenizerME(model);
-		  String tokens[] = tokenizer.tokenize(sentence);
-		  return tokens;
-		}
-		catch (IOException e) {
-		  e.printStackTrace();
-		}
-		finally {
-		  if (modelIn != null) {
-		    try {
-		      modelIn.close();
-		    }
-		    catch (IOException e) {
-		    }
-		  }
-		}
-		return null;
+		Tokenizer tokenizer = new TokenizerME(model);
+		String tokens[] = tokenizer.tokenize(sentence);
+		return tokens;
+	}
+	
+	public Span[] getTokenSpans(String sentence) {
+		Tokenizer tokenizer = new TokenizerME(model);
+		Span tokens[] = tokenizer.tokenizePos(sentence);
+		return tokens;
 	}
 	
 	public String[] POSTagger(String[] tokenized) {

@@ -68,7 +68,7 @@ public class MetricProcessor {
 		for(int i = 0; i < tokens.length; i++) {
 			for(int j = 0; j < tokens[i].length; j++) {
 				if(pronouns.contains(tokens[i][j])) {
-					Location l = new Location(i,j,tokens[i][j].length());
+					Location l = new Location(i,j,1);
 					List<Location> locations = pronounUsage.get(tokens[i][j]);
 					if(locations == null) {
 						locations = new ArrayList<Location>();
@@ -87,7 +87,7 @@ public class MetricProcessor {
 		for(int i = 0; i < tokens.length; i++) {
 			for(int j = 0; j < tokens[i].length; j++) {
 				if(PUNCT.contains(tokens[i][j])) {
-					Location l = new Location(i,j,tokens[i][j].length());
+					Location l = new Location(i,j,1);
 					List<Location> locations = punctuationUsage.get(tokens[i][j]);
 					if(locations == null) {
 						locations = new ArrayList<Location>();
