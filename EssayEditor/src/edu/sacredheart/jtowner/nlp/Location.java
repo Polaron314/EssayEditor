@@ -2,8 +2,8 @@ package edu.sacredheart.jtowner.nlp;
 
 public class Location {
 	
-	private int sentence;
-	private int tokenStart;
+	protected int sentence;
+	protected int tokenStart;
 	protected int length;
 	
 	public Location(int sentence, int tokenStart, int tokens) {
@@ -15,6 +15,12 @@ public class Location {
 	@Override
 	public String toString() {
 		return "{" + sentence + ": " + tokenStart + "," + (length) + "}";
+	}
+	
+	public String toString(Essay e) {
+		int start = e.getSpan(sentence, tokenStart).getStart();
+		int end = e.getSpan(sentence, tokenStart + length - 1).getEnd();
+		return "{" + sentence + ": " + start + "," + end + "}";
 	}
 	
 	int getSentence() {

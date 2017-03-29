@@ -1,6 +1,7 @@
 package edu.sacredheart.jtowner.nlp;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -67,6 +68,8 @@ public class Essay {
 		System.out.println();
 		
 		this.sentenceToText(0);
+		this.print();
+		System.out.println(this.pronounUsage);
 	}
 	
 	private String getLocationText(Location l) {
@@ -87,7 +90,7 @@ public class Essay {
 		return new String(encoded, encoding);
 	}
 	
-	public void sentenceToText(int s) {
+	public String sentenceToText(int s) {
 		int length = spans[s][spans[s].length - 1].getEnd();
 		StringBuilder sb = new StringBuilder(length);
 		for(int i = 0; i < length; i++) {
@@ -96,7 +99,20 @@ public class Essay {
 		for(int i = 0; i < spans[s].length; i++) {
 			sb.replace(spans[s][i].getStart(), spans[s][i].getEnd(), tokens[s][i]);
 		}
-		System.out.println(sb);
+		return sb.toString();
 	}
-
+	
+	public Span getSpan(int sentence, int token) {
+		return this.spans[sentence][token];
+	}
+	
+	public void print() {
+		DocumentCreator dc = new DocumentCreator();
+		PrintStream out = System.out;
+		String[] lines = dc.processVerbs(this, verbs);
+		for(int i = 0; i < lines.length; i++) {
+			out.println(lines[i]);
+		}
+		
+	}
 }

@@ -22,4 +22,10 @@ public class Verb extends Location {
 	public void increaseLength() {
 		this.length++;
 	}
+	
+	public String toString(Essay e) {
+		int start = e.getSpan(sentence, tokenStart).getStart();
+		int end = e.getSpan(sentence, tokenStart + length - 1).getEnd();
+		return "{"+ sentence + "," + start + "," + end + "," + voice + "," + tense + "}";
+	}
 }
