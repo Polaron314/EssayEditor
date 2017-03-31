@@ -26,10 +26,10 @@ public class Essay {
 	Span[][] spans;
 	int wordCount;
 	int[] sentenceLengths;
-	HashMap<String, List<Location>> pronounUsage;
 	HashMap<String, List<Location>> punctuationUsage;
 	LinkedHashMap<String, Integer> wordFrequency;
 	List<Verb> verbs;
+	List<Pronoun> pronouns;
 	
 	public Essay(String path) {
 		try {
@@ -59,7 +59,7 @@ public class Essay {
 		wordCount = mp.getWordCount(rawText);
 		sentenceLengths = mp.getSentenceLength(sentences);
 		wordFrequency = mp.getWordFrequency(tokens);
-		pronounUsage = mp.getPronounUsage(tokens);
+		pronouns = mp.getPronounUsage(tokens);
 		punctuationUsage = mp.getPunctuationUsage(tokens);
 		VerbProcessor vp = new VerbProcessor();
 		verbs = vp.process(tokens, tags);
@@ -67,9 +67,21 @@ public class Essay {
 		System.out.println("Done!");
 		System.out.println();
 		
-		this.sentenceToText(0);
-		this.print();
-		System.out.println(this.pronounUsage);
+		for(Verb v : verbs) {
+			System.out.println(v.toString(this));
+			System.out.println(this.getLocationText(v));
+		}
+		
+		for(Pronoun p : pronouns) {
+			System.out.println(p.toString(this));
+			System.out.println(this.getLocationText(p));
+		}
+		
+		DocumentCreator dc = new DocumentCreator();
+		dc.processAll(this);
+		//this.sentenceToText(0);
+		//this.print();
+		//System.out.println(this.pronounUsage);
 	}
 	
 	private String getLocationText(Location l) {
@@ -105,14 +117,12 @@ public class Essay {
 	public Span getSpan(int sentence, int token) {
 		return this.spans[sentence][token];
 	}
+
+	public List<Verb> getVerbs() {
+		return verbs;
+	}
 	
-	public void print() {
-		DocumentCreator dc = new DocumentCreator();
-		PrintStream out = System.out;
-		String[] lines = dc.processVerbs(this, verbs);
-		for(int i = 0; i < lines.length; i++) {
-			out.println(lines[i]);
-		}
-		
+	public List<Pronoun> getPronouns() {
+		return pronouns;
 	}
 }

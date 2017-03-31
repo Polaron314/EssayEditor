@@ -46,7 +46,9 @@ public class VerbProcessor {
 			for(int j = 0; j < sentences[i].length; j++) {
 				if(tags[i][j].contains("RB")) {
 					for(Verb v : verbs) {
-						if(v.doesContain(i, j)) {
+						if(v.sentence == i && v.tokenStart >= j) {
+							v.offset(1);
+						} else if(v.doesContain(i, j)) {
 							v.increaseLength();
 						}
 					}
@@ -276,8 +278,8 @@ public class VerbProcessor {
 						break;
 					case "was": case "were":
 						tenses[0]++;
-						voices[0]++;
-						this.addVerb(sentenceNum, i - 1, 2, 0, 0);
+						voices[1]++;
+						this.addVerb(sentenceNum, i - 1, 2, 1, 0);
 						sl.remove(i);
 						tl.remove(i);
 						sl.remove(i - 1);

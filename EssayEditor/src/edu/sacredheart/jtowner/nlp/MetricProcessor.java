@@ -26,7 +26,7 @@ public class MetricProcessor {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("pronouns.txt")));
 			String line;
 			while ((line = br.readLine()) != null) {
-		        pronouns.add(line);
+		        pronouns.add(line.toLowerCase());
 		    }
 			br.close();
 		} catch(Exception e) {
@@ -63,21 +63,32 @@ public class MetricProcessor {
 		return this.sortValue(freq);
 	}
 	
-	public HashMap<String, List<Location>> getPronounUsage(String[][] tokens) {
-		HashMap<String, List<Location>> pronounUsage = new HashMap<String, List<Location>>();
+	public List<Pronoun> getPronounUsage(String[][] tokens) {
+		List<Pronoun> pronounUsage = new ArrayList<Pronoun>();
 		for(int i = 0; i < tokens.length; i++) {
 			for(int j = 0; j < tokens[i].length; j++) {
-				if(pronouns.contains(tokens[i][j])) {
+				if(pronouns.contains(tokens[i][j].toLowerCase())) {
+					String pro = tokens[i][j].toLowerCase();
+					Pronoun p = new Pronoun(i,j,1,pro);
+					pronounUsage.add(p);
+				}
+			}
+		}
+		
+		/*HashMap<String, List<Location>> pronounUsage = new HashMap<String, List<Location>>();
+		for(int i = 0; i < tokens.length; i++) {
+			for(int j = 0; j < tokens[i].length; j++) {
+				if(pronouns.contains(tokens[i][j].toLowerCase())) {
 					Location l = new Location(i,j,1);
-					List<Location> locations = pronounUsage.get(tokens[i][j]);
+					List<Location> locations = pronounUsage.get(tokens[i][j].toLowerCase());
 					if(locations == null) {
 						locations = new ArrayList<Location>();
 					}
 					locations.add(l);
-					pronounUsage.put(tokens[i][j], locations);
+					pronounUsage.put(tokens[i][j].toLowerCase(), locations);
 				}
 			}
-		}
+		}*/
 		
 		return pronounUsage;
 	}

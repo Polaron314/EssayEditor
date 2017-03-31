@@ -28,4 +28,8 @@ public class Verb extends Location {
 		int end = e.getSpan(sentence, tokenStart + length - 1).getEnd();
 		return "{"+ sentence + "," + start + "," + end + "," + voice + "," + tense + "}";
 	}
+	
+	public void offset(int offset) {
+		this.tokenStart++;
+	}
 }
