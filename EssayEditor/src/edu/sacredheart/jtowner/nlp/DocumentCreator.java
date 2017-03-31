@@ -13,14 +13,14 @@ public class DocumentCreator {
 	
 	public void processAll(Essay e) {
 		this.writeToFile(this.processVerbs(e, e.getVerbs()), new File("verbs.txt"));
-		this.writeToFile(this.processPronouns(e, e.getPronouns()), new File("pronouns.txt"));
+		this.writeToFile(this.processPronouns(e, e.getPronouns()), new File("pronoun.txt"));
 	}
 	
 	public String[] processVerbs(Essay e, List<Verb> verbs) {
 		String[] verbString = new String[verbs.size()];
 		for(int i = 0; i < verbs.size(); i++) {
 			String line = verbs.get(i).toString(e);
-			verbString[i] = line.substring(1, line.length() - 2);
+			verbString[i] = line.substring(1, line.length() - 1);
 		}
 		return verbString;
 	}
@@ -29,7 +29,7 @@ public class DocumentCreator {
 		String[] pronounString = new String[pronouns.size()];
 		for(int i = 0; i < pronouns.size(); i++) {
 			String line = pronouns.get(i).toString(e);
-			pronounString[i] = line.substring(1, line.length() - 2);
+			pronounString[i] = line.substring(1, line.length() - 1);
 		}
 		return pronounString;
 	}

@@ -67,7 +67,7 @@ public class Essay {
 		System.out.println("Done!");
 		System.out.println();
 		
-		for(Verb v : verbs) {
+		/*for(Verb v : verbs) {
 			System.out.println(v.toString(this));
 			System.out.println(this.getLocationText(v));
 		}
@@ -75,7 +75,7 @@ public class Essay {
 		for(Pronoun p : pronouns) {
 			System.out.println(p.toString(this));
 			System.out.println(this.getLocationText(p));
-		}
+		}*/
 		
 		DocumentCreator dc = new DocumentCreator();
 		dc.processAll(this);
