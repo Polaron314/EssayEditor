@@ -1,0 +1,9 @@
+c:\users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\bin\Debug\EssayEditor.exe.config
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\bin\Debug\EssayEditor.exe
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\bin\Debug\EssayEditor.pdb
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\obj\Debug\EssayEditor.csprojResolveAssemblyReference.cache
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\obj\Debug\EssayEditor.Form1.resources
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\obj\Debug\EssayEditor.Properties.Resources.resources
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\obj\Debug\EssayEditor.csproj.GenerateResource.Cache
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\obj\Debug\EssayEditor.exe
+C:\Users\jms\documents\visual studio 2015\Projects\EssayEditor\EssayEditor\obj\Debug\EssayEditor.pdb
