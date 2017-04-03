@@ -33,7 +33,7 @@ public class Essay {
 	
 	public Essay(String path) {
 		try {
-			rawText = this.readFile(path, Charset.defaultCharset());
+			rawText = this.readFile(path, Charset.forName("UTF-8"));
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -43,7 +43,7 @@ public class Essay {
 		System.out.println("Initializing");
 		LanguageProcessor lp = new LanguageProcessor();
 		MetricProcessor mp = new MetricProcessor();
-		System.out.println("Processing Sentneces...");
+		System.out.println("Processing Sentences...");
 		this.sentences = lp.toSentences(rawText);
 		System.out.println("Processing Tokens...");
 		tokens = new String[sentences.length][];
@@ -124,5 +124,9 @@ public class Essay {
 	
 	public List<Pronoun> getPronouns() {
 		return pronouns;
+	}
+	
+	public String[] getSentences() {
+		return this.sentences;
 	}
 }

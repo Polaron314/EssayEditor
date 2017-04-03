@@ -3,6 +3,7 @@ package edu.sacredheart.jtowner.nlp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 public class DocumentCreator {
@@ -14,6 +15,7 @@ public class DocumentCreator {
 	public void processAll(Essay e) {
 		this.writeToFile(this.processVerbs(e, e.getVerbs()), new File("verbs.txt"));
 		this.writeToFile(this.processPronouns(e, e.getPronouns()), new File("pronoun.txt"));
+		this.processEssayText(e);
 	}
 	
 	public String[] processVerbs(Essay e, List<Verb> verbs) {
@@ -36,7 +38,7 @@ public class DocumentCreator {
 	
 	public void writeToFile(String[] lines, File file) {
 		try {
-			PrintWriter writer = new PrintWriter(file);
+			PrintWriter writer = new PrintWriter(file, "UTF-8");
 			for(String l : lines) {
 				writer.println(l);
 			}
@@ -44,7 +46,26 @@ public class DocumentCreator {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	}
+	
+	public void processEssayText(Essay e) {
+		String[] output = new String[1];
+		output[0] = "";
+		String[] lengths = new String[e.getSentences().length];
+		int currLength = 0;
+		int i = 0;
+		for(String sentence : e.getSentences()) {
+			lengths[i] = currLength + "";
+			i++;
+			currLength += sentence.length() + 1;
+			output[0] += sentence + " ";
+		}
+		this.writeToFile(output, new File("out.txt"));
+		this.writeToFile(lengths, new File("marks.txt"));
 	}
 	
 }
