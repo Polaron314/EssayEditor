@@ -17,12 +17,18 @@ import opennlp.tools.util.Span;
 public class LanguageProcessor {
 	
 	TokenizerModel model;
+	InputStream sentModelIn;
+	SentenceModel sentModel;
+	SentenceDetectorME sentenceDetector;
 	
 	public LanguageProcessor() {
 		InputStream modelIn = null;
 		try {
 			modelIn = new FileInputStream("en-token.bin");
 			model = new TokenizerModel(modelIn);
+			sentModelIn = new FileInputStream("en-sent.bin");
+			sentModel = new SentenceModel(sentModelIn);
+			sentenceDetector = new SentenceDetectorME(sentModel);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,6 +107,13 @@ public class LanguageProcessor {
 		return null;
 	}
 	
-	
+	public int[] sentenceStarts(String text) {
+		Span[] spans = this.sentenceDetector.sentPosDetect(text);
+		int[] starts = new int[spans.length];
+		for(int i = 0; i < spans.length; i++) {
+			starts[i] = spans[i].getStart();
+		}
+		return starts;
+	}
 	
 }

@@ -23,15 +23,15 @@ public class Location {
 		return "{" + sentence + ": " + start + "," + end + "}";
 	}
 	
-	int getSentence() {
+	public int getSentence() {
 		return sentence;
 	}
 	
-	int getTokenStart() {
+	public int getTokenStart() {
 		return tokenStart;
 	}
 	
-	int getLength() {
+	public int getLength() {
 		return length;
 	}
 	
